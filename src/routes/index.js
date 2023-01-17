@@ -13,8 +13,8 @@ router.get('/', async function(req, res, next) {
 
 router.get('/webhook', async function(req, res, next) {
     console.info( await binance.futuresBalance() );
-
-    res.redirect('/')
+    console.info( await binance.futuresMarkPrice( "BTCUSDT" ) );
+    res.render('index', { title: 'HTML Igra'});
 });
 
 
