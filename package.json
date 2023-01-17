@@ -21,6 +21,7 @@
     "express-oauth2-jwt-bearer": "^1.2.0",
     "http-errors": "~1.6.3",
     "morgan": "~1.9.1",
+    "node-binance-api": "^0.13.1",
     "pg": "^8.8.0"
   }
 }
