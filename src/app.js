@@ -7,7 +7,7 @@ var logger = require('morgan');
 var dotenv = require('dotenv');
 
 const externalUrl = process.env.RENDER_EXTERNAL_URL || undefined;
-const port = externalUrl && process.env.PORT ? parseInt(process.env.PORT) : 4092;
+const port = 4092;
 
 dotenv.config();
 
@@ -54,10 +54,6 @@ app.use(function(err, req, res, next) {
 
 
 var http = require('http');
-http.createServer(function (req, res) {
-  res.writeHead(200, {'Content-Type': 'text/plain'});
-  res.write('Hello World!');
-  res.end();
-}).listen(8080);
+app.listen(port, () => console.log(`Listening on port ${port}`))
 
 module.exports = app;
