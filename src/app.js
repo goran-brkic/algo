@@ -7,7 +7,7 @@ var logger = require('morgan');
 var dotenv = require('dotenv');
 
 const externalUrl = process.env.RENDER_EXTERNAL_URL || undefined;
-const port = 4092;
+const port = 80; // TradingView requests port 80
 
 dotenv.config();
 
