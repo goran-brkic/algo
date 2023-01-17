@@ -53,19 +53,11 @@ app.use(function(err, req, res, next) {
 });
 
 
-if (externalUrl) {
-  const hostname = "127.0.0.1";
-  app.listen(port, hostname, () => {
-    console.log(`Server locally running at http://${hostname}:${port} and from outside on ${externalUrl}`);
-  });
-} else {
-  https.createServer({
-      key: fs.readFileSync('./server.key'),
-      cert: fs.readFileSync('./server.cert')
-  }, app)
-      .listen(port, function () {
-      console.log(`SPA running at https://localhost:${port}/`);
-  });
-}
+var http = require('http');
+http.createServer(function (req, res) {
+  res.writeHead(200, {'Content-Type': 'text/plain'});
+  res.write('Hello World!');
+  res.end();
+}).listen(8080);
 
 module.exports = app;
