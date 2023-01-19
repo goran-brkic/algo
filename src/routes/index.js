@@ -12,38 +12,67 @@ router.get('/', async function(req, res, next) {
 });
 
 router.post('/webhook', async function(req, res, next) {
-    /* console.info( await binance.futuresBalance() );
-    console.info( await binance.futuresMarkPrice( "BTCUSDT" ) );
-    */
 
-    //console.info( await binance.futuresOpenOrders( "BTCUSDT" ) );
     console.info( await binance.futuresCancelAll( "BTCUSDT" ) );
-    let result = await binance.futuresMarkPrice( "BTCUSDT" );
-    let quantity = (1000 / result.markPrice).toFixed(3)
-    /* let balances = await binance.futuresBalance()
-    if(balances[6].balance < 10)
-      quantitiy = () */
-    
-    //console.log(quantity)
-    console.info( await binance.futuresMarketBuy( 'BTCUSDT', quantity ) );
 
-    let acc = await binance.futuresAccount();
-    let entryPrice = 0.0;
-    acc.positions.forEach(element => {
-      if(element.symbol == "BTCUSDT")
-        entryPrice = element.entryPrice;
-    });
+    if(req.body.content == 'L'){
+      let result = await binance.futuresMarkPrice( "BTCUSDT" );
+      let quantity = (1000 / result.markPrice).toFixed(3)
+      let balances = await binance.futuresBalance()
+      if(balances[6].balance < 10)
+        quantity = ((balances[6].balance)*100 / result.markPrice).toFixed(3)
 
-    console.log(entryPrice)
-    
-    let price = (entryPrice*0.995).toFixed(1);
-    console.log(price)
-    let order = await binance.futuresMarketSell("BTCUSDT", quantity, {type: "STOP_MARKET", stopPrice: price, reduceOnly: true});
-    console.log(order)
-    
-    price = (entryPrice*1.002).toFixed(1);
-    order = await binance.futuresMarketSell("BTCUSDT", quantity, {type: "TAKE_PROFIT_MARKET", stopPrice: price, reduceOnly: true});
-    console.log(order)
+      let acc = await binance.futuresAccount();
+      let entryPrice = 0.0;
+      acc.positions.forEach(element => {
+        if(element.symbol == "BTCUSDT")
+          entryPrice = element.entryPrice;
+      });
+      
+      let price = (entryPrice*0.995).toFixed(1);
+      //console.log(price)
+      let order = await binance.futuresMarketSell("BTCUSDT", quantity, {type: "STOP_MARKET", stopPrice: price, reduceOnly: true});
+      //console.log(order)
+      
+      price = (entryPrice*1.002).toFixed(1);
+      order = await binance.futuresMarketSell("BTCUSDT", quantity, {type: "TAKE_PROFIT_MARKET", stopPrice: price, reduceOnly: true});
+      //console.log(order)
+    } else if(req.body.content == 'CLES') {
+        let acc = await binance.futuresAccount();
+        let quantity = 0.0;
+        acc.positions.forEach(element => {
+          if(element.symbol == "BTCUSDT")
+            quantity = element.positionAmt
+        });
+        quantity = quantity.toFixed(3)
+        let order = await binance.futuresMarketSell("BTCUSDT", quantity, {reduceOnly: true})
+
+        let balances = await binance.futuresBalance()
+        if(balances[6].balance < 10)
+          quantity = ((balances[6].balance)*100 / result.markPrice).toFixed(3)
+        else
+          quantity = (1000 / result.markPrice).toFixed(3)
+        
+        order = await binance.futuresMarketSell("BTCUSDT", quantity);
+    } else if(req.body.content == "CL") {
+        let acc = await binance.futuresAccount();
+        let quantity = 0.0;
+        acc.positions.forEach(element => {
+          if(element.symbol == "BTCUSDT")
+            quantity = element.positionAmt
+        });
+        quantity = quantity.toFixed(3)
+        let order = await binance.futuresMarketSell("BTCUSDT", quantity, {reduceOnly: true})
+    } else if(req.body.content == "CS") {
+        let acc = await binance.futuresAccount();
+        let quantity = 0.0;
+        acc.positions.forEach(element => {
+          if(element.symbol == "BTCUSDT")
+            quantity = element.positionAmt
+        });
+        quantity = quantity.toFixed(3)
+        let order = await binance.futuresMarketBuy("BTCUSDT", quantity, {reduceOnly: true} )
+    }
 
 });
 
